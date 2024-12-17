@@ -1,8 +1,8 @@
 // Simulated product data
 let products = [
-    { id: 1, name: "Smartphone", price: 499.99, description: "Latest model smartphone", image: "https://via.placeholder.com/300x200.png?text=Smartphone", category: "Electronics", condition: "new", seller: "John Doe", likes: 10, status: "available" },
-    { id: 2, name: "Laptop", price: 999.99, description: "High-performance laptop", image: "https://via.placeholder.com/300x200.png?text=Laptop", category: "Electronics", condition: "used", seller: "Jane Smith", likes: 15, status: "available" },
-    { id: 3, name: "Headphones", price: 99.99, description: "Noise-cancelling headphones", image: "https://via.placeholder.com/300x200.png?text=Headphones", category: "Electronics", condition: "new", seller: "John Doe", likes: 8, status: "available" },
+    { id: 1, name: "Smartphone", price: 499.99, description: "Latest model smartphone", image: "https://via.placeholder.com/300x200.png?text=Smartphone", category: "Electronics", condition: "new", seller: "John Doe", likes: 10, status: "available", liked: false },
+    { id: 2, name: "Laptop", price: 999.99, description: "High-performance laptop", image: "https://via.placeholder.com/300x200.png?text=Laptop", category: "Electronics", condition: "used", seller: "Jane Smith", likes: 15, status: "available", liked: false },
+    { id: 3, name: "Headphones", price: 99.99, description: "Noise-cancelling headphones", image: "https://via.placeholder.com/300x200.png?text=Headphones", category: "Electronics", condition: "new", seller: "John Doe", likes: 8, status: "available", liked: false },
 ];
 
 // Simulated user data
@@ -37,6 +37,13 @@ if (document.getElementById('signupForm')) {
         const confirmPassword = document.getElementById('confirmPassword').value;
         const phone = document.getElementById('phone').value;
         
+        // Validate phone number
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+            alert('Phone number must be exactly 10 digits');
+            return;
+        }
+
         // Validate password
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?])(?=.*[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]).{8,64}$/;
         if (!passwordRegex.test(password)) {
@@ -74,6 +81,10 @@ if (document.getElementById('signupForm')) {
         const users = JSON.parse(localStorage.getItem('users')) || [];
         if (users.some(u => u.email === email)) {
             alert('Email already exists');
+            return;
+        }
+        if (users.some(u => u.phone === `63${phone}`)) {
+            alert('Phone number already exists');
             return;
         }
         
@@ -325,13 +336,23 @@ if (document.getElementById('productList')) {
     function likeProduct(productId) {
         const product = products.find(p => p.id == productId);
         if (product) {
-            product.likes++;
+            if (product.liked) {
+                product.likes--;
+                product.liked = false;
+            } else {
+                product.likes++;
+                product.liked = true;
+            }
             displayProducts(products);
         }
     }
 
     // Add to cart
     function addToCart(productId) {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        cartItems.push(productId);
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        updateCart();
         alert(`Product ${productId} added to cart`);
     }
 
@@ -522,7 +543,8 @@ if (document.getElementById('sellerProductList')) {
             image: 'https://via.placeholder.com/300x200.png?text=' + document.getElementById('productName').value,
             seller: user.name,
             likes: 0,
-            status: 'available'
+            status: 'available',
+            liked: false
         };
         products.push(newProduct);
         displaySellerProducts();
@@ -552,6 +574,32 @@ if (document.getElementById('logout')) {
     });
 }
 
+// Function to update cart count
+function updateCart() {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const cartButton = document.getElementById('cartButton');
+    if (cartButton) {
+        cartButton.textContent = `Cart (${cartItems.length})`;
+    }
+}
+
+// Function to load user profile picture
+function loadProfilePicture() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const profilePicture = document.getElementById('profilePicture');
+    if (user && user.profilePicture) {
+        profilePicture.src = user.profilePicture;
+    } else {
+        profilePicture.src = 'https://via.placeholder.com/40';
+    }
+}
+
 // Check authentication on page load
 checkAuth();
+
+// Call updateCart and loadProfilePicture if productList exists
+if (document.getElementById('productList')) {
+    loadProfilePicture();
+    updateCart();
+}
 
