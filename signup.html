@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MartiMart - Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="styles.css" rel="stylesheet">
 </head>
 <body class="bg-light">
     <div class="container mt-5">
-        <h1 class="text-center mb-4 text-primary">Welcome to MartiMart</h1>
+        <h1 class="text-center mb-4 text-dark animate__animated animate__fadeIn">Welcome to MartiMart</h1>
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card shadow">
+                <div class="card shadow animate__animated animate__fadeInUp">
                     <div class="card-body">
                         <h2 class="card-title text-center mb-4">Sign Up</h2>
                         <form id="signupForm">
@@ -31,17 +32,19 @@
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" required>
+                                <small class="form-text text-muted">Minimum 8 characters, 1 symbol, 1 number, 1 lowercase and 1 uppercase letter</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="phone" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="userType" class="form-label">Account Type</label>
-                                <select class="form-select" id="userType" required>
-                                    <option value="customer">Customer</option>
-                                    <option value="seller">Seller</option>
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text">63</span>
+                                    <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}" required>
+                                </div>
+                            
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                         </form>
@@ -49,6 +52,24 @@
                             Already have an account? <a href="index.html">Login</a>
                         </p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="otpModalLabel">Verify Your Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>We've sent an OTP to your email. Please enter it below to verify your account.</p>
+                    <input type="text" class="form-control" id="otpInput" placeholder="Enter OTP">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="verifyOtp">Verify</button>
                 </div>
             </div>
         </div>
