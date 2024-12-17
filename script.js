@@ -8,12 +8,6 @@ let products = [
 // Simulated user data
 let users = [];
 
-// Simulated chat data
-let chats = {};
-
-// Product categories
-const categories = ["Electronics", "Clothing", "Home & Garden", "Sports & Outdoors", "Books", "Toys & Games", "Beauty & Personal Care", "Automotive", "Health & Wellness"];
-
 // Simple Base64 encoding/decoding for password "hashing" (NOT SECURE, just for demonstration)
 function encodePassword(password) {
     return btoa(password);
@@ -26,29 +20,10 @@ function decodePassword(encodedPassword) {
 // Check if user is logged in
 function checkAuth() {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (!user && !window.location.pathname.includes('index.html') && !window.location.pathname.includes('signup.html')) {
+    if (!user && !window.location.pathname.includes('index.html') && !window.location.pathname.includes('signup.html') && !window.location.pathname.includes('forgot-password.html')) {
         window.location.href = 'index.html';
     }
     return user;
-}
-
-// Login functionality
-if (document.getElementById('loginForm')) {
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.email === email && decodePassword(u.password) === password);
-        
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-            window.location.href = user.type === 'seller' ? 'seller-dashboard.html' : 'marketplace.html';
-        } else {
-            alert('Invalid credentials');
-        }
-    });
 }
 
 // Signup functionality
@@ -59,22 +34,175 @@ if (document.getElementById('signupForm')) {
         const birthday = document.getElementById('birthday').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
         const phone = document.getElementById('phone').value;
-        const userType = document.getElementById('userType').value;
         
+        // Validate password
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?])(?=.*[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]).{8,64}$/;
+        if (!passwordRegex.test(password)) {
+            alert('Password must be 8-64 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.');
+            return;
+        }
+
+        if (password.length > 64) {
+            alert('Password must not exceed 64 characters.');
+            return;
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            const mismatchModal = new bootstrap.Modal(document.getElementById('passwordMismatchModal'));
+            mismatchModal.show();
+            return;
+        }
+
+        // Validate age
+        const birthDate = new Date(birthday);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        // Check if user is 18 or older
+        if (age < 18) {
+            alert('You must be 18 or older to create an account.');
+            return;
+        }
+
         const users = JSON.parse(localStorage.getItem('users')) || [];
         if (users.some(u => u.email === email)) {
             alert('Email already exists');
             return;
         }
         
-        const newUser = { name, birthday, email, password: encodePassword(password), phone, type: userType };
+        const newUser = { name, birthday, email, password: encodePassword(password), phone: `63${phone}` };
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
-        alert('Account created successfully');
-        window.location.href = 'index.html';
+
+        // Simulate OTP sending
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        localStorage.setItem('currentOtp', otp);
+        alert(`Your OTP is: ${otp}`);
+
+        const otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
+        otpModal.show();
+    });
+
+    document.getElementById('verifyOtp').addEventListener('click', function() {
+        const enteredOtp = document.getElementById('otpInput').value;
+        const storedOtp = localStorage.getItem('currentOtp');
+
+        if (enteredOtp === storedOtp) {
+            alert('Account created successfully. You can now log in.');
+            localStorage.removeItem('currentOtp');
+            window.location.href = 'index.html';
+        } else {
+            alert('Invalid OTP. Please try again.');
+        }
     });
 }
+
+// Login functionality
+if (document.getElementById('loginForm')) {
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+        
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.email === email && decodePassword(u.password) === password);
+        
+        if (user) {
+            if (rememberMe) {
+                localStorage.setItem('rememberedUser', JSON.stringify({ email, password: encodePassword(password) }));
+            } else {
+                localStorage.removeItem('rememberedUser');
+            }
+            localStorage.setItem('user', JSON.stringify(user));
+            window.location.href = 'marketplace.html';
+        } else {
+            alert('Invalid credentials. Please try again.');
+        }
+    });
+
+    // Check for remembered user
+    const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser'));
+    if (rememberedUser) {
+        document.getElementById('email').value = rememberedUser.email;
+        document.getElementById('password').value = decodePassword(rememberedUser.password);
+        document.getElementById('rememberMe').checked = true;
+    }
+}
+
+// Forgot password functionality
+if (document.getElementById('forgotPasswordForm')) {
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.email === email);
+
+        if (user) {
+            // Simulate OTP sending
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('currentOtp', otp);
+            alert(`Your OTP is: ${otp}`);
+
+            const otpModal = new bootstrap.Modal(document.getElementById('otpModal'));
+            otpModal.show();
+        } else {
+            alert('Email not found. Please check your email and try again.');
+        }
+    });
+
+    document.getElementById('verifyOtp').addEventListener('click', function() {
+        const enteredOtp = document.getElementById('otpInput').value;
+        const storedOtp = localStorage.getItem('currentOtp');
+
+        if (enteredOtp === storedOtp) {
+            localStorage.removeItem('currentOtp');
+            const resetPasswordModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+            resetPasswordModal.show();
+        } else {
+            alert('Invalid OTP. Please try again.');
+        }
+    });
+
+    document.getElementById('resetPassword').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+        if (newPassword !== confirmNewPassword) {
+            alert('New passwords do not match. Please try again.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(u => u.email === email && decodePassword(u.password) === oldPassword);
+
+        if (userIndex !== -1) {
+            users[userIndex].password = encodePassword(newPassword);
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Password reset successfully. You can now log in with your new password.');
+            window.location.href = 'index.html';
+        } else {
+            alert('Invalid old password. Please try again.');
+        }
+    });
+}
+
+// Simulated chat data
+let chats = {};
+
+// Product categories
+const categories = ["Electronics", "Clothing", "Home & Garden", "Sports & Outdoors", "Books", "Toys & Games", "Beauty & Personal Care", "Automotive", "Health & Wellness"];
+
 
 // Marketplace functionality
 if (document.getElementById('productList')) {
@@ -289,8 +417,8 @@ if (document.getElementById('productList')) {
 // Seller dashboard functionality
 if (document.getElementById('sellerProductList')) {
     const user = checkAuth();
-    if (user.type !== 'seller') {
-        window.location.href = 'marketplace.html';
+    if (!user) {
+        window.location.href = 'index.html';
     }
 
     // Display seller's products
