@@ -6,16 +6,18 @@ body {
 
 .navbar {
     background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .navbar-brand {
     font-weight: bold;
-    color: #007bff;
+    color: #000;
 }
 
 .card {
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
     background-color: #fff;
+    border: none;
 }
 
 .card:hover {
@@ -24,13 +26,15 @@ body {
 }
 
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #000;
+    border-color: #000;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    background-color: #333;
+    border-color: #333;
+    transform: translateY(-2px);
 }
 
 .product-image {
@@ -45,7 +49,7 @@ body {
 }
 
 .chat-message.sent {
-    background-color: #007bff;
+    background-color: #000;
     color: #fff;
     align-self: flex-end;
 }
@@ -59,5 +63,30 @@ body {
 #chatMessages {
     display: flex;
     flex-direction: column;
+}
+
+.form-control:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+}
+
+.animate__animated {
+    animation-duration: 0.5s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-primary:active {
+    animation: pulse 0.3s;
 }
 
