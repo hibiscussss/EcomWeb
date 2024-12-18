@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="styles.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body class="login-page">
     <div class="container mt-5">
         <h1 class="text-center mb-4 text-dark animate__animated animate__fadeIn">Welcome to MartiMart</h1>
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="card shadow animate__animated animate__fadeInUp">
-                    <div class="card-body">
-                        <h2 class="card-title text-center mb-4">Login</h2>
+                    <div class="card-body p-4">
+                        <h2 class="card-title text-center mb-4 h3">Login</h2>
                         <form id="loginForm">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
@@ -32,16 +32,21 @@
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
                         <div class="text-center mt-3">
-                            <a href="forgot-password.html">Forgot Password?</a>
+                            <a href="forgot-password.html" class="text-decoration-none">Forgot Password?</a>
                         </div>
-                        <p class="text-center mt-3">
-                            Don't have an account? <a href="signup.html">Sign up</a>
+                        <p class="text-center mt-3 mb-0">
+                            Don't have an account? <a href="signup.html" class="text-decoration-none">Sign up</a>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="cart-animation">
+        <img src="img/indeximg/cart.png" alt="Shopping Cart" class="animate__animated animate__slideInRight">
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
