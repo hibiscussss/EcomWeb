@@ -1,28 +1,13 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
     color: #333;
-}
-
-.login-page {
     background: url('bg.jpg') no-repeat center center fixed;
     background-size: cover;
     min-height: 100vh;
     position: relative;
 }
 
-.login-page::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(255, 255, 255, 0.9);
-    z-index: 0;
-}
-
-.login-page .container {
+.container {
     position: relative;
     z-index: 1;
 }
@@ -116,17 +101,26 @@ body {
 .cart-animation {
     position: fixed;
     bottom: 20px;
-    left: 0;
-    width: 100%;
-    text-align: center;
+    left: -100px;
     z-index: 1000;
 }
 
 .cart-animation img {
     width: 100px;
     height: auto;
-    animation-duration: 1s;
-    animation-delay: 0.5s;
+    animation: cartSlide 3s ease-in-out forwards;
+}
+
+@keyframes cartSlide {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(calc(100vw - 100px));
+    }
+    100% {
+        transform: translateX(100vw);
+    }
 }
 
 /* Make form elements more compact */

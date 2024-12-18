@@ -603,3 +603,15 @@ if (document.getElementById('productList')) {
     updateCart();
 }
 
+// Cart animation
+document.addEventListener('DOMContentLoaded', function() {
+    const cartImage = document.querySelector('.cart-animation img');
+    cartImage.classList.add('animate__animated', 'animate__slideInRight');
+    
+    cartImage.addEventListener('animationend', function() {
+        setTimeout(() => {
+            cartImage.style.animation = 'cartSlide 3s ease-in-out forwards';
+        }, 1000);
+    });
+});
+
