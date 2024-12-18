@@ -1,8 +1,8 @@
 // Simulated product data
 let products = [
-    { id: 1, name: "Smartphone", price: 499.99, description: "Latest model smartphone", image: "https://via.placeholder.com/300x200.png?text=Smartphone", category: "Electronics", condition: "new", seller: "John Doe", likes: 10, status: "available", liked: false },
-    { id: 2, name: "Laptop", price: 999.99, description: "High-performance laptop", image: "https://via.placeholder.com/300x200.png?text=Laptop", category: "Electronics", condition: "used", seller: "Jane Smith", likes: 15, status: "available", liked: false },
-    { id: 3, name: "Headphones", price: 99.99, description: "Noise-cancelling headphones", image: "https://via.placeholder.com/300x200.png?text=Headphones", category: "Electronics", condition: "new", seller: "John Doe", likes: 8, status: "available", liked: false },
+    { id: 1, name: "Smartphone", price: 499.99, description: "Latest model smartphone", image: "https://via.placeholder.com/300x200.png?text=Smartphone", category: "mobile_phones", condition: "new", seller: "John Doe", likes: 10, status: "available", liked: false },
+    { id: 2, name: "Laptop", price: 999.99, description: "High-performance laptop", image: "https://via.placeholder.com/300x200.png?text=Laptop", category: "electronics_computers", condition: "used", seller: "Jane Smith", likes: 15, status: "available", liked: false },
+    { id: 3, name: "Headphones", price: 99.99, description: "Noise-cancelling headphones", image: "https://via.placeholder.com/300x200.png?text=Headphones", category: "electronics_computers", condition: "new", seller: "John Doe", likes: 8, status: "available", liked: false },
 ];
 
 // Simulated user data
@@ -212,24 +212,32 @@ if (document.getElementById('forgotPasswordForm')) {
 let chats = {};
 
 // Product categories
-const categories = ["Electronics", "Clothing", "Home & Garden", "Sports & Outdoors", "Books", "Toys & Games", "Beauty & Personal Care", "Automotive", "Health & Wellness"];
+const categories = {
+    "Home & Garden": ["tools", "furniture", "garden", "appliances", "household"],
+    "Entertainment": ["books_movies_music", "video_games"],
+    "Clothing & Accessories": ["jewelry_accessories", "bags_luggage", "mens_clothing_shoes", "womens_clothing_shoes"],
+    "Family": ["toys_games", "baby_kids", "pet_supplies", "health_beauty"],
+    "Electronics": ["mobile_phones", "electronics_computers"],
+    "Cars": ["suv", "sedan", "van", "truck", "bus", "jet"]
+};
 
+// Get category name from category value
+function getCategoryName(categoryValue) {
+    for (const [mainCategory, subCategories] of Object.entries(categories)) {
+        if (subCategories.includes(categoryValue)) {
+            return `${mainCategory} - ${categoryValue.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+        }
+    }
+    return categoryValue;
+}
 
 // Marketplace functionality
-if (document.getElementById('productList')) {
+if (document.getElementById('productList') && window.location.pathname.includes('marketplace.html')) {
     const user = checkAuth();
-
-    // Populate category filter
-    const categoryFilter = document.getElementById('categoryFilter');
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categoryFilter.appendChild(option);
-    });
 
     // Display products
     function displayProducts(productsToShow) {
+        loadProductsFromLocalStorage(); // Load the latest products
         const productList = document.getElementById('productList');
         productList.innerHTML = '';
         productsToShow.forEach(product => {
@@ -242,6 +250,7 @@ if (document.getElementById('productList')) {
                             <p class="card-text">${product.description}</p>
                             <p class="card-text">$${product.price.toFixed(2)}</p>
                             <p class="card-text">Seller: ${product.seller}</p>
+                            <p class="card-text">Category: ${getCategoryName(product.category)}</p>
                             <button class="btn btn-primary view-product" data-id="${product.id}">View Details</button>
                             <button class="btn btn-outline-primary like-product" data-id="${product.id}">
                                 <i class="bi bi-heart"></i> ${product.likes}
@@ -295,7 +304,7 @@ if (document.getElementById('productList')) {
                         <p>Price: $${product.price.toFixed(2)}</p>
                         <p>Seller: ${product.seller}</p>
                         <p>Condition: ${product.condition}</p>
-                        <p>Category: ${product.category}</p>
+                        <p>Category: ${getCategoryName(product.category)}</p>
                         <button class="btn btn-primary buy-now" data-id="${product.id}">Buy Now</button>
                         <button class="btn btn-outline-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
                         <button class="btn btn-outline-secondary favorite" data-id="${product.id}">
@@ -343,6 +352,7 @@ if (document.getElementById('productList')) {
                 product.likes++;
                 product.liked = true;
             }
+            updateProducts(products); // Update products in localStorage
             displayProducts(products);
         }
     }
@@ -436,7 +446,7 @@ if (document.getElementById('productList')) {
 }
 
 // Seller dashboard functionality
-if (document.getElementById('sellerProductList')) {
+if (document.getElementById('productList') && window.location.pathname.includes('manage-products.html')) {
     const user = checkAuth();
     if (!user) {
         window.location.href = 'index.html';
@@ -444,8 +454,8 @@ if (document.getElementById('sellerProductList')) {
 
     // Display seller's products
     function displaySellerProducts() {
-        const sellerProductList = document.getElementById('sellerProductList');
-        sellerProductList.innerHTML = '';
+        const productList = document.getElementById('productList');
+        productList.innerHTML = '';
         const sellerProducts = products.filter(product => product.seller === user.name);
         sellerProducts.forEach(product => {
             const productCard = `
@@ -455,7 +465,8 @@ if (document.getElementById('sellerProductList')) {
                         <div class="card-body">
                             <h5 class="card-title">${product.name}</h5>
                             <p class="card-text">${product.description}</p>
-                            <p class="card-text>$${product.price.toFixed(2)}</p>
+                            <p class="card-text">$${product.price.toFixed(2)}</p>
+                            <p class="card-text">Category: ${getCategoryName(product.category)}</p>
                             <p class="card-text">Likes: ${product.likes}</p>
                             <p class="card-text">Status: ${product.status}</p>
                             <button class="btn btn-primary edit-product" data-id="${product.id}">Edit</button>
@@ -467,7 +478,7 @@ if (document.getElementById('sellerProductList')) {
                     </div>
                 </div>
             `;
-            sellerProductList.innerHTML += productCard;
+            productList.innerHTML += productCard;
         });
 
         // Add event listeners to buttons
@@ -490,26 +501,16 @@ if (document.getElementById('sellerProductList')) {
     function editProduct(productId) {
         const product = products.find(p => p.id == productId);
         if (product) {
+            document.getElementById('productId').value = product.id;
             document.getElementById('productName').value = product.name;
             document.getElementById('productDescription').value = product.description;
             document.getElementById('productPrice').value = product.price;
             document.getElementById('productCategory').value = product.category;
             document.getElementById('productCondition').value = product.condition;
+            document.getElementById('productImage').value = product.image; //Added to pre-populate image field
 
             const addProductModal = new bootstrap.Modal(document.getElementById('addProductModal'));
             addProductModal.show();
-
-            document.getElementById('addProductForm').onsubmit = function(e) {
-                e.preventDefault();
-                product.name = document.getElementById('productName').value;
-                product.description = document.getElementById('productDescription').value;
-                product.price = parseFloat(document.getElementById('productPrice').value);
-                product.category = document.getElementById('productCategory').value;
-                product.condition = document.getElementById('productCondition').value;
-
-                displaySellerProducts();
-                addProductModal.hide();
-            };
         }
     }
 
@@ -517,6 +518,7 @@ if (document.getElementById('sellerProductList')) {
     function deleteProduct(productId) {
         if (confirm('Are you sure you want to delete this product?')) {
             products = products.filter(p => p.id != productId);
+            updateProducts(products); // Update products in localStorage
             displaySellerProducts();
         }
     }
@@ -526,39 +528,84 @@ if (document.getElementById('sellerProductList')) {
         const product = products.find(p => p.id == productId);
         if (product && product.status !== 'sold') {
             product.status = 'sold';
+            updateProducts(products); // Update products in localStorage
             displaySellerProducts();
         }
     }
 
-    // Add new product
-    document.getElementById('addProductForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const newProduct = {
-            id: products.length + 1,
-            name: document.getElementById('productName').value,
-            description: document.getElementById('productDescription').value,
-            price: parseFloat(document.getElementById('productPrice').value),
-            category: document.getElementById('productCategory').value,
-            condition: document.getElementById('productCondition').value,
-            image: 'https://via.placeholder.com/300x200.png?text=' + document.getElementById('productName').value,
-            seller: user.name,
-            likes: 0,
-            status: 'available',
-            liked: false
-        };
-        products.push(newProduct);
-        displaySellerProducts();
-        const addProductModal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
-        addProductModal.hide();
-    });
+    // Add/Edit product form submission
+    document.getElementById('saveProduct').addEventListener('click', function() {
+        const productId = document.getElementById('productId').value;
+        const name = document.getElementById('productName').value;
+        const description = document.getElementById('productDescription').value;
+        const price = parseFloat(document.getElementById('productPrice').value);
+        const category = document.getElementById('productCategory').value;
+        const condition = document.getElementById('productCondition').value;
+        const imageInput = document.getElementById('productImage');
+        
+        if (!name || !description || !price || !category || !condition) {
+            alert('Please fill in all required fields.');
+            return;
+        }
 
-    // Populate category select
-    const categorySelect = document.getElementById('productCategory');
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
+        if (!imageInput.files.length && !productId) {
+            alert('Please upload a product image.');
+            return;
+        }
+
+        function saveProduct(imageData) {
+            if (productId) {
+                // Edit existing product
+                const productIndex = products.findIndex(p => p.id == productId);
+                if (productIndex !== -1) {
+                    products[productIndex] = {
+                        ...products[productIndex],
+                        name,
+                        description,
+                        price,
+                        category,
+                        condition,
+                        image: imageData || products[productIndex].image
+                    };
+                }
+            } else {
+                // Add new product
+                const newProduct = {
+                    id: products.length + 1,
+                    name,
+                    description,
+                    price,
+                    category,
+                    condition,
+                    seller: user.name,
+                    likes: 0,
+                    status: 'available',
+                    liked: false,
+                    image: imageData
+                };
+                products.push(newProduct);
+            }
+
+            updateProducts(products); // Update products in localStorage
+            displaySellerProducts();
+            const addProductModal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+            addProductModal.hide();
+
+            // Reset form
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+        }
+
+        if (imageInput.files.length) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                saveProduct(imageData);
+            };
+            reader.readAsDataURL(imageInput.files[0]);
+        } else {
+            saveProduct();
+        }
     });
 
     // Initial display of seller's products
@@ -603,11 +650,10 @@ if (document.getElementById('productList')) {
     updateCart();
 }
 
-
 // Cart animation
 document.addEventListener('DOMContentLoaded', function() {
-    if (document.body.classList.contains('login-page')) {
-        const cartImage = document.querySelector('.cart-animation img');
+    const cartImage = document.querySelector('.cart-animation img');
+    if (cartImage) {
         cartImage.classList.add('animate__animated', 'animate__slideInRight');
         
         cartImage.addEventListener('animationend', function() {
@@ -617,3 +663,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Function to save products to localStorage
+function saveProductsToLocalStorage() {
+    localStorage.setItem('products', JSON.stringify(products));
+}
+
+// Function to load products from localStorage
+function loadProductsFromLocalStorage() {
+    const storedProducts = localStorage.getItem('products');
+    if (storedProducts) {
+        products = JSON.parse(storedProducts);
+    }
+}
+
+// Load products when the page loads
+loadProductsFromLocalStorage();
+
+// Save products whenever they are modified
+function updateProducts(newProducts) {
+    products = newProducts;
+    saveProductsToLocalStorage();
+}
+

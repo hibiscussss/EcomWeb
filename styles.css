@@ -20,34 +20,79 @@ body {
     position: relative;
     z-index: 1;
 }
+.login-page .btn-primary {
+    background-color: #ff9eaf;
+    border-color: #ff9eaf;
+}
+
+.login-page .btn-primary:hover {
+    background-color: #7fcdcd;
+    border-color: #7fcdcd;
+}
 
 
-.bgsign {
-    background: url('img/indeximg/bg.jpg') no-repeat center center fixed;
+
+
+
+.bg-sign {
+    background: url('img/signupimg/bg.jpg') no-repeat center center fixed;
     background-size: cover;
     min-height: 100vh;
     position: relative;
 }
 
-.bgsign::before {
+.bg-sign::before {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
-    bottom: 0;
+    bottom: 10;
     left: 0;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.85);
     z-index: 0;
 }
 
-.bgsign .container {
+.bg-signe .container {
     position: relative;
     z-index: 1;
-
-
-
-
 }
+
+.bg-sign .card {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 15px;
+}
+
+.bg-sign .form-control {
+    border-radius: 8px;
+}
+
+.bg-sign .btn-primary {
+    background-color: #ff9eaf;
+    border-color: #ff9eaf;
+}
+
+.bg-sign .btn-primary:hover {
+    background-color: #7fcdcd;
+    border-color: #7fcdcd;
+}
+
+.bg-sign .input-group-text {
+    background-color: #ff9eaf;
+    color: white;
+    border-color: #ff9eaf;
+}
+
+.bg-sign a {
+    color: #7fcdcd;
+}
+
+.bg-sign a:hover {
+    color: #ff9eaf;
+}
+
+
+
 .bg-light {
     background-size: cover;
     min-height: 100vh;

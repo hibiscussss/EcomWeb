@@ -22,7 +22,7 @@
                     <a class="nav-link" href="account.html">Manage Account</a>
                     <a class="nav-link" href="track.html">Track Orders</a>
                     <a class="nav-link" href="manageprod.html">Manage Products</a>
-                    <a class="nav-link" href="index.html">Log Out</a>
+                    <a class="nav-link" href="index.html" id="logout">Log Out</a>
                 </div>
             </div>
         </div>
@@ -38,6 +38,48 @@
                     <option value="date">Sort by Date</option>
                     <option value="price_asc">Price: Low to High</option>
                     <option value="price_desc">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <optgroup label="Home & Garden">
+                        <option value="tools">Tools</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="garden">Garden</option>
+                        <option value="appliances">Appliances</option>
+                        <option value="household">Household</option>
+                    </optgroup>
+                    <optgroup label="Entertainment">
+                        <option value="books_movies_music">Books, Movies & Music</option>
+                        <option value="video_games">Video Games</option>
+                    </optgroup>
+                    <optgroup label="Clothing & Accessories">
+                        <option value="jewelry_accessories">Jewelry & Accessories</option>
+                        <option value="bags_luggage">Bags & Luggage</option>
+                        <option value="mens_clothing_shoes">Men's Clothing & Shoes</option>
+                        <option value="womens_clothing_shoes">Women's Clothing & Shoes</option>
+                    </optgroup>
+                    <optgroup label="Family">
+                        <option value="toys_games">Toys & Games</option>
+                        <option value="baby_kids">Baby & Kids</option>
+                        <option value="pet_supplies">Pet Supplies</option>
+                        <option value="health_beauty">Health & Beauty</option>
+                    </optgroup>
+                    <optgroup label="Electronics">
+                        <option value="mobile_phones">Mobile Phones</option>
+                        <option value="electronics_computers">Electronics & Computers</option>
+                    </optgroup>
+                    <optgroup label="Cars">
+                        <option value="suv">SUV</option>
+                        <option value="sedan">Sedan</option>
+                        <option value="van">Van</option>
+                        <option value="truck">Truck</option>
+                        <option value="bus">Bus</option>
+                        <option value="jet">Jet</option>
+                    </optgroup>
                 </select>
             </div>
         </div>
